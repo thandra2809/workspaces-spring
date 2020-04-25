@@ -7,5 +7,6 @@ import com.appsdeveloperblog.app.ws.shared.dto.UserDTO;
 public interface UserService extends UserDetailsService{
 	
 	UserDTO createUser(UserDTO user);
+	UserDTO getUser(String email);
 
 }
