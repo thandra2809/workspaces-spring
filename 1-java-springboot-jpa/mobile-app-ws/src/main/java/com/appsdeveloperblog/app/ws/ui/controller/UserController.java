@@ -1,5 +1,6 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,7 @@ import com.appsdeveloperblog.app.ws.ui.model.response.RequestOperationStatus;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserRest;
 
 @RestController
-@RequestMapping("users") /* http://localhost:8080/users */
+@RequestMapping("/users") /* http://localhost:8080/users */
 public class UserController {
 
 	@Autowired
@@ -131,7 +132,7 @@ public class UserController {
 	
 	@GetMapping(path = "/{userId}/addresses", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE, "application/hal+json" })
-	public List<AddressesRest> getUserAddress(@PathVariable String userId) {
+	public List<AddressesRest> getUserAddresses(@PathVariable String userId) {
 		
 		List<AddressesRest> returnValue = new ArrayList<>();
 		List<AddressDTO> addressesDTO = addressService.getAddresses(userId);
@@ -144,6 +145,22 @@ public class UserController {
 		}
 		
 		return returnValue;
+	}
+	
+	@GetMapping(path = "/{userId}/addresses/{addressId}", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE, "application/hal+json" })
+	public AddressesRest getUserAddress( @PathVariable String addressId) {
+		
+		AddressDTO addressesDTO = addressService.getAddress(addressId);
+		
+		ModelMapper modelMapper = new ModelMapper();
+		//Link addressLink = linkTo(methodOn(UserController.class).getUserAddress(userId, addressId)).withSelfRel();
+		//Link userLink = linkTo(UserController.class).slash(userId).withRel("user");
+		//Link addressesLink = linkTo(methodOn(UserController.class).getUserAddresses(userId)).withRel("addresses");
+
+		
+		
+		return modelMapper.map(addressesDTO, AddressesRest.class);
 	}
 	
 
