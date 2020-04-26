@@ -129,12 +129,12 @@ public class UserController {
 	}
 	
 	
-	@GetMapping(path = "/{userId}/addresses/{addressId}", produces = { MediaType.APPLICATION_JSON_VALUE,
+	@GetMapping(path = "/{userId}/addresses", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE, "application/hal+json" })
-	public List<AddressesRest> getUserAddress(@PathVariable String userId, @PathVariable String addressId) {
+	public List<AddressesRest> getUserAddress(@PathVariable String userId) {
 		
 		List<AddressesRest> returnValue = new ArrayList<>();
-		List<AddressDTO> addressesDTO = addressService.getAddresses(addressId);
+		List<AddressDTO> addressesDTO = addressService.getAddresses(userId);
 		
 		if(addressesDTO!=null && !addressesDTO.isEmpty()) {
 			java.lang.reflect.Type listType = new TypeToken<List<AddressesRest>>() {}.getType();
@@ -143,7 +143,7 @@ public class UserController {
 			
 		}
 		
-		return null;
+		return returnValue;
 	}
 	
 
