@@ -3,6 +3,7 @@ package com.appsdeveloperblog.app.ws.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +21,7 @@ import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.io.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.Utils;
+import com.appsdeveloperblog.app.ws.shared.dto.AddressDTO;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDTO;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 
@@ -40,21 +42,30 @@ public class UserServiceImpl implements UserService {
 
 		if (userRepository.findByEmail(user.getEmail()) != null)
 			throw new RuntimeException("Record Already exists");
+		
+		for(int i=0;i<user.getAddresses().size();i++)
+		{
+			AddressDTO address = user.getAddresses().get(i);
+			address.setUserDetails(user);
+			address.setAddressId(utils.generateAddressId(30));
+			user.getAddresses().set(i, address);
+		}
 
-		UserEntity userEntity = new UserEntity();
-
-		BeanUtils.copyProperties(user, userEntity);
+		//UserEntity userEntity = new UserEntity();
+		//BeanUtils.copyProperties(user, userEntity);
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEntity = modelMapper.map(user, UserEntity.class);
 
 		String publicUserId = utils.generateUserId(30);
-
 		userEntity.setUserId(publicUserId);
 		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
 		UserEntity storedUserDetails = userRepository.save(userEntity);
 
-		UserDTO returnValue = new UserDTO();
-
-		BeanUtils.copyProperties(storedUserDetails, returnValue);
+		
+		//UserDTO returnValue = new UserDTO();
+		//BeanUtils.copyProperties(storedUserDetails, returnValue);
+		UserDTO returnValue = modelMapper.map(storedUserDetails, UserDTO.class);
 
 		return returnValue;
 	}
