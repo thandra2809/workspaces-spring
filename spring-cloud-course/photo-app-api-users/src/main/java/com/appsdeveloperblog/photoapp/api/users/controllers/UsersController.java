@@ -14,8 +14,11 @@ public class UsersController {
     Environment environment;
 
     @GetMapping("/status/check")
-    public String getStatus(){
+    public String getStatus() {
         return "Users Service Working" + environment.getProperty("local.server.port");
     }
+
+    
+
 
 }
